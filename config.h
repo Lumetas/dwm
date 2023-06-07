@@ -1,7 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char userSudoPass[]        = "";
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -66,7 +65,7 @@ static const char *termcmd[]  = { "kitty", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd /home/lum/dwm && echo", userSudoPass, " | sudo -S make clean install && pkill dwm",  NULL} } },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd /home/lum/dwm && echo '' | sudo -S make clean install && pkill dwm",  NULL} } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"google-chrome-stable", NULL}}},
