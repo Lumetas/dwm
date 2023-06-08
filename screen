@@ -1,0 +1,4 @@
+#!/bin/bash
+scrot -s screen.png;
+xclip -selection cli -t image/png -i screen.png;
+rm screen.png;
