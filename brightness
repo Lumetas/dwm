@@ -1,0 +1,33 @@
+#!/bin/bash
+idkb=$(xinput list | grep -Po 'AT Translated Set 2 keyboard\s+id=\d+' | grep -Po '\d+$');
+sleep 2;
+
+while true; do
+
+
+
+	k1=$(xinput --query-state $idkb | grep -Po '\[10\]=.*');
+	k2=$(xinput --query-state $idkb | grep -Po '\[11\]=.*');
+	k3=$(xinput --query-state $idkb | grep -Po '\[12\]=.*');
+	k4=$(xinput --query-state $idkb | grep -Po '\[13\]=.*');
+	k5=$(xinput --query-state $idkb | grep -Po '\[14\]=.*');
+	k6=$(xinput --query-state $idkb | grep -Po '\[15\]=.*');
+	k7=$(xinput --query-state $idkb | grep -Po '\[16\]=.*');
+	k8=$(xinput --query-state $idkb | grep -Po '\[17\]=.*');
+	k9=$(xinput --query-state $idkb | grep -Po '\[18\]=.*');	
+    k0=$(xinput --query-state $idkb | grep -Po '\[19\]=.*');
+	key=$(echo -e "$k1\n$k2\n$k3\n$k4\n$k5\n$k6\n$k7\n$k8\n$k9\n$k0\n" | grep down);
+    #echo $key;
+	if [[ $key == "" ]];
+	then
+        key=$(echo $key);
+	else
+        key=${key//down/};
+		key=${key//]=/};
+		key=${key//[/};
+	    let "key = $key - 9";
+		key=$(bc<<<"scale=1;$key/10");
+		xrandr --output $(xrandr -q | grep ' connected' | head -n 1 | cut -d ' ' -f1) --brightness $key;
+		exit;
+	fi
+done

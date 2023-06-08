@@ -79,11 +79,13 @@ static const char *termcmd[]  = { "kitty", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd /home/lum/dwm && echo '' | sudo -S make clean install && pkill dwm",  NULL} } },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd /home/lum/dwm && echo 'ik34567890' | sudo -S make clean install && pkill dwm",  NULL} } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"google-chrome-stable", NULL}}},
 	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen", NULL}}},
+	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/sound", NULL}}},
+	{ MODKEY|ShiftMask,             XK_b,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/brightness", NULL}}},
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_o,      incnmaster,     {.i = +1 } },
