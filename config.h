@@ -12,10 +12,20 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
+
+static const char col_bg1[]        = "#242424";
+static const char col_bg2[]        = "#4b4b4b";
+static const char col_text[]        = "#e9e7d0";
+static const char col_fg1[]        = "#5b6e37";
+static const char col_fg2[]        = "#a1b579";
+static const char col_fg3[]        = "#ba7c33";
+
+
+
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { col_text, col_bg1, col_bg2 },
+	[SchemeSel]  = { col_text, col_fg1, col_bg1 },
 };
 
 /* tagging */
@@ -58,14 +68,18 @@ static const Layout layouts[] = {
 /* commands */
 //   google-chrome-stable
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-nf", col_gray3, "-nb", col_gray1, "-sb", col_cyan, "-sf", col_gray4, "-fn", "roboto-11",  NULL };
+//                                                    Текст НВ          фон НВ         Фон В           Текс В
+
+static const char *dmenucmd[] = { "dmenu_run", "-nf", col_fg2, "-nb", col_bg1, "-sb", col_fg1, "-sf", col_text, "-fn", "roboto-11",  NULL };
+
+//static const char *dmenucmd[] = { "dmenu_run", "-nf", col_text, "-nb", col_bg1, "-sb", col_fg1, "-sf", "#000000", "-fn", "roboto-11",  NULL };
 static const char *termcmd[]  = { "kitty", NULL };
 //static const char *rebuild[]  = { "sh", "-c", "cd /home/lum/dwm && echo 'ik34567890' | sudo -S make clean install && pkill dwm", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd /home/lum/dwm && echo '' | sudo -S make clean install && pkill dwm",  NULL} } },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd /home/lum/dwm && echo 'ik34567890' | sudo -S make clean install && pkill dwm",  NULL} } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"google-chrome-stable", NULL}}},
