@@ -6,3 +6,7 @@ Dependencies:
 ~~~
 xss-lock compton feh setxkbmap dmenu lxappearance betterlockscreen scrot xclip
 ~~~
+config.h > 82
+~~~
+...cd ~/dwm && echo 'PASSWORD' | sudo -S...
+~~~
