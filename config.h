@@ -79,7 +79,7 @@ static const char *termcmd[]  = { "kitty", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd ~/dwm && echo '' | sudo -S make clean install && pkill dwm",  NULL} } },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = (const char*[]){"sh", "-c", "cd ~/dwm && echo 'ik34567890' | sudo -S make clean install && pkill dwm",  NULL} } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"google-chrome-stable", NULL}}},
