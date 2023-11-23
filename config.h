@@ -13,12 +13,12 @@ static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
 
-static const char col_bg1[]        = "#242424";
-static const char col_bg2[]        = "#4b4b4b";
-static const char col_text[]        = "#e9e7d0";
-static const char col_fg1[]        = "#5b6e37";
-static const char col_fg2[]        = "#a1b579";
-static const char col_fg3[]        = "#ba7c33";
+static const char col_bg1[]         = "#242424";
+static const char col_bg2[]         = "#4b4b4b";
+static const char col_text[]        = "#ffffff";
+static const char col_fg1[]         = "#bd0000";
+static const char col_fg2[]         = "#ffffff";
+static const char col_fg3[]         = "#ba7c33";
 
 
 

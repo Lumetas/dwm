@@ -1,0 +1,7 @@
+#!/bin/bash
+feh --bg-scale ~/wallpaper/bg1.jpg &
+compton -f --vsync opengl-oml &
+~/dwm/status &
+syndaemon -i 0.25 &
+xss-lock ~/dwm/lock &
+sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:alt_shift_toggle' &
