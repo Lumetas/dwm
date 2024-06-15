@@ -4,5 +4,5 @@ cd ~; git clone https://github.com/Lumetas/dwm.git; cd dwm; sudo make clean inst
 ~~~
 Dependencies: 
 ~~~
-xss-lock compton feh setxkbmap dmenu lxappearance betterlockscreen scrot xclip
+xss-lock compton feh setxkbmap dmenu lxappearance betterlockscreen scrot xclip kando
 ~~~
