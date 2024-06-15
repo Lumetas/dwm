@@ -1,0 +1,108 @@
+{
+  "menus": [
+    {
+      "shortcut": "",
+      "shortcutID": "lum-menu",
+      "centered": false,
+      "root": {
+        "type": "submenu",
+        "name": "dwm",
+        "icon": "menu",
+        "iconTheme": "material-symbols-rounded",
+        "children": [
+          {
+            "type": "submenu",
+            "data": {},
+            "name": "volume",
+            "icon": "volume_down",
+            "iconTheme": "material-symbols-rounded",
+            "children": [
+              {
+                "type": "command",
+                "data": {
+                  "command": "amixer sset 'Master' 50%"
+                },
+                "name": "medium",
+                "icon": "volume_down_alt",
+                "iconTheme": "material-symbols-rounded"
+              },
+              {
+                "type": "command",
+                "data": {
+                  "command": "amixer sset 'Master' 100%"
+                },
+                "name": "max",
+                "icon": "volume_up",
+                "iconTheme": "material-symbols-rounded"
+              },
+              {
+                "type": "command",
+                "data": {
+                  "command": "amixer sset 'Master' 0%"
+                },
+                "name": "off",
+                "icon": "volume_off",
+                "iconTheme": "material-symbols-rounded"
+              },
+              {
+                "type": "command",
+                "data": {
+                  "command": "amixer sset 'Master' 20%"
+                },
+                "name": "min",
+                "icon": "volume_mute",
+                "iconTheme": "material-symbols-rounded"
+              }
+            ]
+          },
+          {
+            "type": "submenu",
+            "data": {},
+            "name": "brightness",
+            "icon": "brightness_6",
+            "iconTheme": "material-symbols-rounded",
+            "children": [
+              {
+                "type": "command",
+                "data": {
+                  "command": "xrandr --output $(xrandr -q | grep ' connected' | head -n 1 | cut -d ' ' -f1) --brightness 1"
+                },
+                "name": "100",
+                "icon": "brightness_7",
+                "iconTheme": "material-symbols-rounded"
+              },
+              {
+                "type": "command",
+                "data": {
+                  "command": "xrandr --output $(xrandr -q | grep ' connected' | head -n 1 | cut -d ' ' -f1) --brightness 0.75"
+                },
+                "name": "75",
+                "icon": "brightness_5",
+                "iconTheme": "material-symbols-rounded"
+              },
+              {
+                "type": "command",
+                "data": {
+                  "command": "xrandr --output $(xrandr -q | grep ' connected' | head -n 1 | cut -d ' ' -f1) --brightness 0.5"
+                },
+                "name": "50",
+                "icon": "brightness_4",
+                "iconTheme": "material-symbols-rounded"
+              },
+              {
+                "type": "command",
+                "data": {
+                  "command": "xrandr --output $(xrandr -q | grep ' connected' | head -n 1 | cut -d ' ' -f1) --brightness 0.25"
+                },
+                "name": "25",
+                "icon": "brightness_empty",
+                "iconTheme": "material-symbols-rounded"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "stash": []
+}
