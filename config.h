@@ -1,6 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-
-/* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of window - увеличен для лучшей видимости */
 static const unsigned int gappx     = 10;       /* gaps between windows */ 
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -95,6 +93,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen", NULL}}},
 	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
 	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
+	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/neovide", NULL}}},
 	
 	/* Медиаклавиши */
 	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL}} },
