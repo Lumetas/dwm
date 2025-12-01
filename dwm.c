@@ -1665,7 +1665,7 @@ spawn(const Arg *arg)
 {
 	struct sigaction sa;
 
-	if (arg->v == dmenucmd)
+	if (arg->v == roficmd)
 		dmenumon[0] = '0' + selmon->num;
 	if (fork() == 0) {
 		if (dpy)
@@ -2175,6 +2175,7 @@ main(int argc, char *argv[])
 #endif /* __OpenBSD__ */
 	scan();
 	runAutostart();
+	togglebar(NULL);
 	run();
 	cleanup();
 	XCloseDisplay(dpy);

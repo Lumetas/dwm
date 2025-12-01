@@ -1,4 +1,8 @@
 #!/bin/bash
-scrot -s screen.png;
+if [ "$1" == "-a" ]; then
+	scrot -m screen.png;
+else
+	scrot -s screen.png;
+fi
 xclip -selection cli -t image/png -i screen.png;
 rm screen.png;

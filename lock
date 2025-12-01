@@ -1,3 +1,3 @@
 #!/bin/bash
 #betterlockscreen -l --show-layout
-i3lock
+i3lock -c 000000 --inside-color=000000 --ring-color=ffffff --line-color=ffffff --keyhl-color=000000 --ringver-color=ffffff --insidever-color=000000 --ringwrong-color=ff0000 --insidewrong-color=000000 --time-color=ffffff --date-color=ffffff --verif-color=ffffff --wrong-color=ffffff --modif-color=ffffff
