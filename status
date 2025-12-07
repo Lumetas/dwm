@@ -19,8 +19,12 @@ do
 		weekend_date=$(date '+%m')
 		week_display="chill m.$weekend_date"
 	else
+		if [[ $day_of_week -eq 1 ]]; then
+			monday=$(date -d "monday" +%d.%m 2>/dev/null || date -v-monday +%d.%m 2>/dev/null)
+		else
+			monday=$(date -d "last monday" +%d.%m 2>/dev/null || date -v-monday +%d.%m 2>/dev/null)
+		fi
 		# Если рабочие дни, показываем диапазон недели
-		monday=$(date -d "monday" +%d.%m 2>/dev/null || date -v-monday +%d.%m 2>/dev/null)
 		friday=$(date -d "friday" +%d.%m 2>/dev/null || date -v-friday +%d.%m 2>/dev/null)
 		week_display="$monday-$friday"
 	fi

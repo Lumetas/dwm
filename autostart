@@ -1,5 +1,7 @@
 #!/bin/bash
+dunst &
 compton --backend glx --vsync &
 ~/dwm/status &
 xss-lock ~/dwm/lock &
 sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:win_space_toggle' &
+xset r rate 250 30 &

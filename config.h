@@ -79,8 +79,6 @@ static const char *roficmd[] = { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]  = { "kitty", NULL };
 static const char *kando[] = { "kando", "-m", "dwm", NULL};
 
-/* Команда для перезапуска dwm с сохранением окон */
-static const char *restartcmd[] = { "dwm_restart", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
