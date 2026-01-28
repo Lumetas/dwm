@@ -88,7 +88,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/zen/zen", NULL}}},
-	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen", NULL}}},
+	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "flameshot gui", NULL}}},
 	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
 	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
 	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/neovide", NULL}}},
