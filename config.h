@@ -8,19 +8,41 @@ static const char *fonts[]          = { "monospace:size=10", "FontAwesome:size=1
 static const char dmenufont[]       = "monospace:size=10";
 
 /* Цветовая схема с ярко-белой обводкой */
-static const char col_black[]       = "#000000";
-static const char col_dark_gray[]   = "#222222";
-static const char col_gray[]        = "#444444";
-static const char col_light_gray[]  = "#888888";
-static const char col_lighter_gray[]= "#bbbbbb";
-static const char col_white[]       = "#ffffff";
-static const char col_bright_white[]= "#ffffff"; /* ярко-белый для активного окна */
+static const char col_dark0[]      = "#0C0B15";   /* Бархатно-чёрный с фиолетовым оттенком */
+static const char col_dark1[]      = "#1D1A35";   /* Темный фиолетовый */
+static const char col_dark2[]      = "#262245";   /* Средний фиолетовый */
+static const char col_dark3[]      = "#302A55";   /* Более светлый фиолетовый */
+static const char col_dark4[]      = "#5A5775";   /* Серый с фиолетовым подтоном */
+
+static const char col_light0[]     = "#E0B0FF";   /* Нежный лавандовый - основной акцент */
+static const char col_light1[]     = "#D18AFF";   /* Светло-пурпурный */
+static const char col_light2[]     = "#C792EA";   /* Фиалковый */
+static const char col_light3[]     = "#A45ED4";   /* Умеренный фиолетовый */
+static const char col_light4[]     = "#7D3FB8";   /* Насыщенный пурпур */
+
+/* Акцентные цвета - используются умеренно */
+static const char col_accent_blue[] = "#82C4FF";   /* Ледяной синий */
+static const char col_accent_green[] = "#8AFF80";  /* Мятно-зелёный */
+static const char col_accent_yellow[] = "#FFD166"; /* Золотистый */
+static const char col_accent_red[] = "#FF6B8B";    /* Тёплый розовый */
+
+/* Текстовые цвета */
+static const char col_text_normal[] = "#D18AFF";   /* Для обычного текста */
+static const char col_text_selected[] = "#E0B0FF"; /* Для выбранного текста */
+static const char col_text_dim[] = "#7D3FB8";      /* Для второстепенного текста */
 
 static const char *colors[][3]      = {
-	/*               fg              bg              border   */
-	[SchemeNorm] = { col_lighter_gray, col_dark_gray, col_gray },
-	[SchemeSel]  = { col_white, col_black, col_bright_white }, /* ярко-белая обводка активного окна */
+	/*               fg (текст)        bg (фон)        border   */
+	[SchemeNorm] = { col_text_normal,     col_dark0,      col_dark3 },
+	[SchemeSel]  = { col_text_selected,col_dark2,      col_light0 }, /* Лавандовая обводка */
 };
+
+/* Дополнительные схемы для bar (если используются в config.def.h) */
+static const char col_bar_bg[]      = "#0C0B15";   /* Фон бара */
+static const char col_bar_fg[]      = "#D18AFF";   /* Текст бара */
+static const char col_bar_active[]  = "#E0B0FF";   /* Активный тег */
+static const char col_bar_inactive[]= "#5A5775";   /* Неактивный тег */
+static const char col_bar_urgent[]  = "#FF6B8B";   /* Срочный тег */
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
