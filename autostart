@@ -1,7 +1,7 @@
 #!/bin/bash
 dunst &
 picom --backend glx &
-feh --bg-scale ~/.wallpapers/bg2.jpg &
+feh --bg-scale ~/.wallpapers/bg1.jpg &
 ~/dwm/status &
 xss-lock ~/dwm/lock &
 sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:win_space_toggle' &

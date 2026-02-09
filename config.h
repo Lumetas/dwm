@@ -3,52 +3,54 @@
 /* appearance */
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
-static const unsigned int cornerrad = 22;
-static const unsigned int gappih    = 5;
-static const unsigned int gappiv    = 5;
-static const unsigned int gappoh    = 5;
-static const unsigned int gappov    = 5;
+static const unsigned int cornerrad = 15;
+static const unsigned int gappih    = 13;
+static const unsigned int gappiv    = 13;
+static const unsigned int gappoh    = 13;
+static const unsigned int gappov    = 13;
 static const int smartgaps          = 0;
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10", "FontAwesome:size=10" }; /* добавлен FontAwesome для иконок */
 static const char dmenufont[]       = "monospace:size=10";
+/* Цветовая схема на основе новой палитры */
+static const char col_dark0[]      = "#051b35";   /* Глубокий синий */
+static const char col_dark1[]      = "#0e4466";   /* Тёмный сине-серый */
+static const char col_dark2[]      = "#1d5e72";   /* Серо-синий */
+static const char col_dark3[]      = "#246f8b";   /* Умеренный синий */
+static const char col_dark4[]      = "#308fad";   /* Светлый синий */
+static const char col_light0[]     = "#d6b8a1";   /* Светло-бежевый */
+static const char col_light1[]     = "#bb794a";   /* Коричневый */
+static const char col_light2[]     = "#a34c65";   /* Приглушённый розовый */
+static const char col_light3[]     = "#644862";   /* Тёмный фиолетово-коричневый */
+static const char col_light4[]     = "#53b0bc";   /* Бирюзовый */
 
-/* Цветовая схема с ярко-белой обводкой */
-static const char col_dark0[]      = "#0C0B15";   /* Бархатно-чёрный с фиолетовым оттенком */
-static const char col_dark1[]      = "#1D1A35";   /* Темный фиолетовый */
-static const char col_dark2[]      = "#262245";   /* Средний фиолетовый */
-static const char col_dark3[]      = "#302A55";   /* Более светлый фиолетовый */
-static const char col_dark4[]      = "#5A5775";   /* Серый с фиолетовым подтоном */
-static const char col_light0[]     = "#E0B0FF";   /* Нежный лавандовый - основной акцент */
-static const char col_light1[]     = "#D18AFF";   /* Светло-пурпурный */
-static const char col_light2[]     = "#C792EA";   /* Фиалковый */
-static const char col_light3[]     = "#A45ED4";   /* Умеренный фиолетовый */
-static const char col_light4[]     = "#7D3FB8";   /* Насыщенный пурпур */
-
-/* Акцентные цвета - используются умеренно */
-static const char col_accent_blue[] = "#82C4FF";   /* Ледяной синий */
-static const char col_accent_green[] = "#8AFF80";  /* Мятно-зелёный */
-static const char col_accent_yellow[] = "#FFD166"; /* Золотистый */
-static const char col_accent_red[] = "#FF6B8B";    /* Тёплый розовый */
+/* Акцентные цвета */
+static const char col_accent_blue[] = "#308fad";
+static const char col_accent_green[] = "#53b0bc";
+static const char col_accent_yellow[] = "#d6b8a1";
+static const char col_accent_red[] = "#a34c65";
 
 /* Текстовые цвета */
-static const char col_text_normal[] = "#D18AFF";   /* Для обычного текста */
-static const char col_text_selected[] = "#E0B0FF"; /* Для выбранного текста */
-static const char col_text_dim[] = "#7D3FB8";      /* Для второстепенного текста */
+static const char col_text_normal[] = "#d6b8a1";
+static const char col_text_selected[] = "#ffffff";
+static const char col_text_dim[] = "#246f8b";
 
 static const char *colors[][3]      = {
 	/*               fg (текст)        bg (фон)        border   */
-	[SchemeNorm] = { col_text_normal,     col_dark0,      col_dark3 },
-	[SchemeSel]  = { col_text_selected,col_dark2,      col_light0 }, /* Лавандовая обводка */
+	[SchemeNorm] = { col_text_normal,     col_dark0,      col_dark3 },	// passive tag
+	[SchemeSel]  = { col_text_selected,   col_dark2,      col_light0 }, // active tag
+	[SchemeApp] =  { col_text_selected,   col_dark0,      col_light0 }, // appname
 };
 
 /* Дополнительные схемы для bar (если используются в config.def.h) */
 static const char col_bar_bg[]      = "#0C0B15";   /* Фон бара */
 static const char col_bar_fg[]      = "#D18AFF";   /* Текст бара */
-static const char col_bar_active[]  = "#E0B0FF";   /* Активный тег */
+// static const char col_bar_active[]  = "#E0B0FF";   /* Активный тег */
+static const char col_bar_active[]  = "#5A5775";   /* Активный тег */
 static const char col_bar_inactive[]= "#5A5775";   /* Неактивный тег */
-static const char col_bar_urgent[]  = "#FF6B8B";   /* Срочный тег */
+// static const char col_bar_urgent[]  = "#FF6B8B";   /* Срочный тег */
+static const char col_bar_urgent[]  = "#5A5775";   /* Срочный тег */
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
