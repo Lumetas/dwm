@@ -1,6 +1,6 @@
 #!/bin/bash
 dunst &
-compton --backend glx --vsync &
+compton --backend glx &
 feh --bg-scale ~/.wallpapers/bg2.jpg &
 ~/dwm/status &
 xss-lock ~/dwm/lock &
