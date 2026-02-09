@@ -2345,7 +2345,7 @@ roundcorners(Client *c)
     int height = borderpx * 2 + wa.height;
     /* int width = win_attr.border_width * 2 + win_attr.width; */
     /* int height = win_attr.border_width * 2 + win_attr.height; */
-    int rad = cornerrad * enablegaps * (1-enablefullscreen) * enableoutergaps; //config_theme_cornerradius;
+    int rad = border_radius * enablegaps * (1-enablefullscreen) * enableoutergaps; //config_theme_cornerradius;
     int dia = 2 * rad;
 
     // do not try to round if the window would be smaller than the corners
