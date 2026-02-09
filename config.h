@@ -71,10 +71,31 @@ static const int restartdwm = 1; /* включить автоперезапус�
 #define XF86XK_AudioPlay        0x1008ff14
 #define XF86XK_AudioPrev        0x1008ff16
 #define XF86XK_AudioNext        0x1008ff17
+#define XF86XK_KbLightUp		0x1008ff05
+#define XF86XK_KbLightDown		0x1008ff06
 
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 
-/* Заменяем dmenu на rofi */
+/* Команда для увеличения яркости клавиатуры с ограничением до 255 */
+static const char *kbd_backlight_up[] = { 
+    "/bin/bash", "-c", 
+    "brightness=$(cat /sys/class/leds/smc::kbd_backlight/brightness); "
+    "new_brightness=$((brightness + 50)); "
+    "if [ $new_brightness -gt 255 ]; then new_brightness=255; fi; "
+    "echo $new_brightness > /sys/class/leds/smc::kbd_backlight/brightness", 
+    NULL 
+};
+
+/* Команда для уменьшения яркости клавиатуры с ограничением до 0 */
+static const char *kbd_backlight_down[] = { 
+    "/bin/bash", "-c", 
+    "brightness=$(cat /sys/class/leds/smc::kbd_backlight/brightness); "
+    "new_brightness=$((brightness - 50)); "
+    "if [ $new_brightness -lt 0 ]; then new_brightness=0; fi; "
+    "echo $new_brightness > /sys/class/leds/smc::kbd_backlight/brightness", 
+    NULL 
+};
+
 static const char *roficmd[] = { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]  = { "kitty", NULL };
 static const char *kando[] = { "kando", "-m", "dwm", NULL};
@@ -87,15 +108,17 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} }, /* перезапуск dwm с сохранением окон */
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/zen/zen", NULL}}},
-	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen", NULL}}},
+	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "firefox-esr", NULL}}},
+	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "flameshot gui", NULL}}},
 	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
 	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
-	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/neovide", NULL}}},
+	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "nvide", NULL}}},
 	
 	/* Медиаклавиши */
 	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL}} },
 	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%", NULL}} },
+    { 0, XF86XK_KbLightUp,   spawn, {.v = kbd_backlight_up} },
+    { 0, XF86XK_KbLightDown, spawn, {.v = kbd_backlight_down} },
 	{ 0,                            XF86XK_AudioMute,        spawn, {.v = (const char*[]){"pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL}} },
 	{ 0,                            XF86XK_MonBrightnessUp,  spawn, {.v = (const char*[]){"brightnessctl", "set", "+5%", NULL}} },
 	{ 0,                            XF86XK_MonBrightnessDown,spawn, {.v = (const char*[]){"brightnessctl", "set", "5%-", NULL}} },
@@ -116,6 +139,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	// { MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY|ShiftMask,             XK_f,      togglefloating,      {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
@@ -142,7 +166,7 @@ static Button buttons[] = {
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
-	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
+	// { ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
