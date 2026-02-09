@@ -339,7 +339,11 @@ applyrules(Client *c)
         XFree(ch.res_class);
     if (ch.res_name)
         XFree(ch.res_name);
-    c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+    
+    /* НЕ перезаписываем теги, если _NET_WM_DESKTOP уже установлен */
+    if (c->ewmhdesktop == -1) {
+        c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+    }
 }
 
 int
@@ -1117,9 +1121,26 @@ manage(Window w, XWindowAttributes *wa)
         applyrules(c);
     }
 
-    /* Если _NET_WM_DESKTOP установлен, используем его */
-    if (c->ewmhdesktop != -1 && c->ewmhdesktop < LENGTH(tags)) {
+    /* ПРОБЛЕМА БЫЛА ЗДЕСЬ: проверка ewmhdesktop была неполной */
+    /* Если _NET_WM_DESKTOP установлен и валиден, используем его */
+    if (c->ewmhdesktop >= 0 && c->ewmhdesktop < LENGTH(tags)) {
+        /* Устанавливаем теги по _NET_WM_DESKTOP */
         c->tags = 1 << c->ewmhdesktop;
+        /* Обновляем tagset монитора, чтобы окно сразу было видимым */
+        if (!(c->tags & c->mon->tagset[c->mon->seltags])) {
+            /* Если текущий тег не активен, активируем его */
+            c->mon->tagset[c->mon->seltags] |= c->tags;
+        }
+    } else if (c->ewmhdesktop == -1) {
+        /* Если _NET_WM_DESKTOP не установлен, но окно транзиентное,
+           используем теги родительского окна */
+        if (t) {
+            c->tags = t->tags;
+        }
+        /* Если теги все еще не установлены, используем текущий активный тег */
+        if (c->tags == 0) {
+            c->tags = c->mon->tagset[c->mon->seltags];
+        }
     }
 
     if (c->x + WIDTH(c) > c->mon->mx + c->mon->mw)
@@ -1151,6 +1172,25 @@ manage(Window w, XWindowAttributes *wa)
         (unsigned char *) &(c->win), 1);
     XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
     setclientstate(c, NormalState);
+    
+    /* ОБНОВЛЯЕМ _NET_WM_DESKTOP свойство окна */
+    if (c->ewmhdesktop == -1) {
+        /* Если не было установлено через _NET_WM_DESKTOP, вычисляем из тегов */
+        int desk = 0;
+        unsigned int t = c->tags;
+        while (!(t & 1) && desk < LENGTH(tags)) {
+            t >>= 1;
+            desk++;
+        }
+        if (desk < LENGTH(tags)) {
+            long data[] = { desk };
+            XChangeProperty(dpy, c->win, netatom[NetWMDesktop],
+                          XA_CARDINAL, 32, PropModeReplace,
+                          (unsigned char *)data, 1);
+            c->ewmhdesktop = desk;
+        }
+    }
+    
     if (c->mon == selmon)
         unfocus(selmon->sel, 0);
     c->mon->sel = c;
