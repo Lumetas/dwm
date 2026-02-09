@@ -8,12 +8,12 @@ static const unsigned int gappih    = 13;
 static const unsigned int gappiv    = 13;
 static const unsigned int gappoh    = 13;
 static const unsigned int gappov    = 13;
-static const unsigned int gapp_top = 51;
+static const unsigned int gapp_top = 49;
 static const int smartgaps          = 0;
 static const int showbar            = 0;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10", "FontAwesome:size=10" }; /* добавлен FontAwesome для иконок */
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "monospace:size=14", "FontAwesome:size=14" }; /* добавлен FontAwesome для иконок */
+static const char dmenufont[]       = "monospace:size=14";
 /* Цветовая схема на основе новой палитры */
 static const char col_dark0[]      = "#051b35";   /* Глубокий синий */
 static const char col_dark1[]      = "#0e4466";   /* Тёмный сине-серый */
@@ -136,7 +136,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} }, /* перезапуск dwm с сохранением окон */
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "firefox-esr", NULL}}},
+	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/zen/zen", NULL}}},
 	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "flameshot gui", NULL}}},
 	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
 	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
