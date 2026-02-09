@@ -1,8 +1,9 @@
 #!/bin/bash
 dunst &
-compton --backend glx &
+picom --backend glx &
 feh --bg-scale ~/.wallpapers/bg2.jpg &
 ~/dwm/status &
 xss-lock ~/dwm/lock &
 sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:win_space_toggle' &
 xset r rate 200 50 &
+# ~/dwm/polybar &

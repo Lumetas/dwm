@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
-static const unsigned int cornerrad = 30;
+static const unsigned int cornerrad = 22;
 static const unsigned int gappih    = 5;
 static const unsigned int gappiv    = 5;
 static const unsigned int gappoh    = 5;
