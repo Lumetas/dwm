@@ -38,8 +38,8 @@ static const char col_text_dim[] = "#246f8b";
 
 static const char *colors[][3]      = {
 	/*               fg (текст)        bg (фон)        border   */
-	[SchemeNorm] = { col_text_normal,     col_dark0,      col_dark3 },	// passive tag
-	[SchemeSel]  = { col_text_selected,   col_dark2,      col_light0 }, // active tag
+	[SchemeNorm] = { col_text_normal,     col_dark0,      col_light3 },	// passive tag
+	[SchemeSel]  = { col_text_selected,   col_dark2,      col_light4 }, // active tag
 	[SchemeApp] =  { col_text_selected,   col_dark0,      col_light0 }, // appname
 };
 
