@@ -37,6 +37,8 @@ static const char col_text_normal[] = "#d6b8a1";
 static const char col_text_selected[] = "#ffffff";
 static const char col_text_dim[] = "#246f8b";
 
+#define WMNAME "Dharma"
+
 static const char *colors[][3]      = {
 	/*               fg (текст)        bg (фон)        border   */
 	[SchemeNorm] = { col_text_normal,     col_dark0,      col_light3 },	// passive tag
@@ -127,7 +129,7 @@ static const char *kbd_backlight_down[] = {
 };
 
 static const char *roficmd[] = { "rofi", "-show", "drun", NULL };
-static const char *termcmd[]  = { "kitty", NULL };
+static const char *termcmd[]  = { "namaste", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
