@@ -143,6 +143,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "flameshot gui", NULL}}},
 	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
 	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
+	{ MODKEY,                       XK_w,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "dmenu_windows", NULL}}},
 	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "nvide", NULL}}},
 	
 	/* Медиаклавиши */
