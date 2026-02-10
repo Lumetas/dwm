@@ -38,6 +38,7 @@ static const char col_text_selected[] = "#ffffff";
 static const char col_text_dim[] = "#246f8b";
 
 #define WMNAME "Dharma"
+#define WMNAME_LEN 6
 
 static const char *colors[][3]      = {
 	/*               fg (текст)        bg (фон)        border   */
