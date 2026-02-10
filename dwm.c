@@ -1343,6 +1343,31 @@ pop(Client *c)
 }
 
 void
+updatecurrentdesktopfromroot(void)
+{
+    unsigned long *desktop = NULL;
+    Atom real;
+    int format;
+    unsigned long n, extra;
+    int new_desktop = 0;
+
+    if (XGetWindowProperty(dpy, root, netatom[NetCurrentDesktop], 0L, 1L,
+                           False, XA_CARDINAL, &real, &format,
+                           &n, &extra, (unsigned char **)&desktop) == Success) {
+        if (n > 0 && desktop) {
+            new_desktop = *desktop;
+            if (new_desktop >= 0 && new_desktop < LENGTH(tags)) {
+                // Переключаемся на соответствующий тег
+                Arg arg = {.ui = 1 << new_desktop};
+                view(&arg);
+            }
+        }
+        if (desktop)
+            XFree(desktop);
+    }
+}
+
+void
 propertynotify(XEvent *e)
 {
     Client *c;
@@ -1380,6 +1405,10 @@ propertynotify(XEvent *e)
         } else if (ev->atom == netatom[NetWMWindowType]) {
             updatewindowtype(c);
         }
+    }
+    /* Добавим обработку _NET_CURRENT_DESKTOP */
+    else if (ev->window == root && ev->atom == netatom[NetCurrentDesktop]) {
+        updatecurrentdesktopfromroot();
     }
 }
 
@@ -2235,13 +2264,18 @@ updateclientlist()
 }
 
 void updatecurrentdesktop(void){
-    long rawdata[] = { selmon->tagset[selmon->seltags] };
-    int i=0;
-    while(*rawdata >> (i+1)){  /* Добавил скобки */
+    /* Находим самый младший установленный тег */
+    unsigned int tagset = selmon->tagset[selmon->seltags];
+    int i = 0;
+    
+    while (i < LENGTH(tags) && !(tagset & (1 << i))) {
         i++;
     }
-    long data[] = { i };
-    XChangeProperty(dpy, root, netatom[NetCurrentDesktop], XA_CARDINAL, 32, PropModeReplace, (unsigned char *)data, 1);
+    
+    /* Если теги найдены, используем самый младший */
+    long data[] = { (i < LENGTH(tags)) ? i : 0 };
+    XChangeProperty(dpy, root, netatom[NetCurrentDesktop], XA_CARDINAL, 32, 
+                   PropModeReplace, (unsigned char *)data, 1);
 }
 
 int
