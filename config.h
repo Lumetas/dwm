@@ -129,7 +129,7 @@ static const char *kbd_backlight_down[] = {
     NULL 
 };
 
-static const char *roficmd[] = { "rofi", "-show", "drun", NULL };
+static const char *roficmd[] = { "dmenu_apps", NULL };
 static const char *termcmd[]  = { "namaste", NULL };
 
 static Key keys[] = {
