@@ -59,6 +59,7 @@
 #define TAGSLENGTH              (LENGTH(tags))
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
+
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum { SchemeNorm, SchemeSel, SchemeApp }; /* color schemes */
@@ -164,6 +165,7 @@ static void clientmessage(XEvent *e);
 static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
+static void EnvConfig(void);
 static Monitor *createmon(void);
 static void destroynotify(XEvent *e);
 
@@ -2629,6 +2631,7 @@ roundcorners(Client *c)
 int
 main(int argc, char *argv[])
 {
+	EnvConfig();
 	if (argc == 2 && !strcmp("-v", argv[1]))
 		die("dwm-"VERSION);
 	else if (argc != 1)
