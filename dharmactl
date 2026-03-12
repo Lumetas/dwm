@@ -183,9 +183,7 @@ fi
 
 if [ "$1" == "window.moveToTag" ]; then
 	wid=$2
-	tag=$(( $3 - 1 ))  # Конвертируем в 0-based для X11
+	tag=$(( $3 - 1 ))
 	
-	# Перемещаем окно на указанный рабочий стол
-	wmctrl -i -r $wid -t $tag 2>/dev/null || \
-	xprop -id $wid -f _NET_WM_DESKTOP 32c -set _NET_WM_DESKTOP $tag 2>/dev/null
+	xprop -id $wid -f _NET_WM_DESKTOP 32c -set _NET_WM_DESKTOP $tag
 fi

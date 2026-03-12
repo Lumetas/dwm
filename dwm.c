@@ -1398,6 +1398,7 @@ propertynotify(XEvent *e)
                 if (newtags != c->tags) {
                     c->tags = newtags;
                     arrange(c->mon);
+                    updateclientlist();
                 }
             }
         } else if (ev->atom == XA_WM_NAME || ev->atom == netatom[NetWMName]) {
