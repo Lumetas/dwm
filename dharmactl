@@ -186,7 +186,8 @@ if [ "$1" == "event.register" ]; then
 		exit 1
 	fi
 	
-	xprop -root -f "$DHARMA_ATOM" 8s -set "$DHARMA_ATOM" "register $event_name $script"
+	xprop -root -f "_DHARMA_REGISTER" 8s -set "_DHARMA_REGISTER" "$script"
+	xprop -root -f "$DHARMA_ATOM" 8s -set "$DHARMA_ATOM" "register $event_name"
 	sleep 0.1
 fi
 
@@ -199,13 +200,15 @@ if [ "$1" == "event.unregister" ]; then
 		exit 1
 	fi
 	
-	xprop -root -f "$DHARMA_ATOM" 8s -set "$DHARMA_ATOM" "unregister $event_name $script"
+	xprop -root -f "_DHARMA_UNREGISTER" 8s -set "_DHARMA_UNREGISTER" "$script"
+	xprop -root -f "$DHARMA_ATOM" 8s -set "$DHARMA_ATOM" "unregister $event_name"
 	sleep 0.1
 fi
 
 if [ "$1" == "event.list" ]; then
 	xprop -root -f "$DHARMA_ATOM" 8s -set "$DHARMA_ATOM" "list"
 	sleep 0.1
+	xprop -root "_DHARMA_LIST" | sed 's/.*= "//;s/"$//' | sed 's/\\n/\n/g'
 fi
 
 if [ "$1" == "event.help" ]; then

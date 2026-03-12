@@ -303,6 +303,9 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 };
 static Atom wmatom[WMLast], netatom[NetLast];
 static Atom dharmaCmdAtom;
+static Atom dharmaRegisterAtom;
+static Atom dharmaUnregisterAtom;
+static Atom dharmaListAtom;
 static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
@@ -1441,31 +1444,28 @@ propertynotify(XEvent *e)
             snprintf(cmd, sizeof(cmd), "%s", (char *)data);
             XFree(data);
             
-            char response[256] = "OK\n";
             if (strncmp(cmd, "register ", 9) == 0) {
-                char *p = cmd + 9;
-                char *event_name = p;
-                char *script_path = strchr(p, ' ');
-                if (script_path) {
-                    *script_path = '\0';
-                    script_path++;
-                    events_register(event_name, script_path);
+                char *event_name = cmd + 9;
+                unsigned char *script_data = NULL;
+                if (XGetWindowProperty(dpy, root, dharmaRegisterAtom, 0, 512, False,
+                        XA_STRING, &type, &format, &n, &bytes_after, &script_data) == Success && script_data && n > 0) {
+                    events_register(event_name, (char *)script_data);
+                    XFree(script_data);
                 }
             } else if (strncmp(cmd, "unregister ", 11) == 0) {
-                char *p = cmd + 11;
-                char *event_name = p;
-                char *script_path = strchr(p, ' ');
-                if (script_path) {
-                    *script_path = '\0';
-                    script_path++;
-                    events_unregister(event_name, script_path);
+                char *event_name = cmd + 11;
+                unsigned char *script_data = NULL;
+                if (XGetWindowProperty(dpy, root, dharmaUnregisterAtom, 0, 512, False,
+                        XA_STRING, &type, &format, &n, &bytes_after, &script_data) == Success && script_data && n > 0) {
+                    events_unregister(event_name, (char *)script_data);
+                    XFree(script_data);
                 }
             } else if (strcmp(cmd, "list") == 0) {
+                char response[1024] = "";
                 events_list(response, sizeof(response));
+                XChangeProperty(dpy, root, dharmaListAtom, XA_STRING, 8,
+                    PropModeReplace, (unsigned char *)response, strlen(response));
             }
-            
-            XChangeProperty(dpy, root, dharmaCmdAtom, XA_STRING, 8,
-                PropModeReplace, (unsigned char *)response, strlen(response));
         }
     }
 }
@@ -1956,6 +1956,9 @@ setup(void)
 	netatom[NetDesktopNames] = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
 	netatom[NetWMDesktop] = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
 	dharmaCmdAtom = XInternAtom(dpy, "_DHARMA_CMD", False);
+	dharmaRegisterAtom = XInternAtom(dpy, "_DHARMA_REGISTER", False);
+	dharmaUnregisterAtom = XInternAtom(dpy, "_DHARMA_UNREGISTER", False);
+	dharmaListAtom = XInternAtom(dpy, "_DHARMA_LIST", False);
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);

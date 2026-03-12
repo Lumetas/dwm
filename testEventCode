@@ -1,5 +1,11 @@
 #!/bin/bash
-window=$(dharmactl window.info $2 | cut -d'|' -f2)
-if [[ $window == "Navigator, firefox-esr" ]]; then
-	dharmactl window.moveToTag $2 1
+if [[ "$1" == "ClientTag" ]]; then
+	window=$(dharmactl window.info $2 | cut -d'|' -f2)
+	if [[ $window == "Navigator, firefox-esr" ]]; then
+		dharmactl window.moveToTag $2 1
+	fi
+else 
+	if [[ -z $(dharmactl event.list | grep -o "$(realpath $0)") ]]; then
+		dharmactl event.register ClientTag "$(realpath $0)"
+	fi
 fi
