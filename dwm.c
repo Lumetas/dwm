@@ -44,6 +44,7 @@
 
 #include "drw.h"
 #include "util.h"
+#include "events.h"
 
 /* macros */
 #define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)
@@ -301,6 +302,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[UnmapNotify] = unmapnotify
 };
 static Atom wmatom[WMLast], netatom[NetLast];
+static Atom dharmaCmdAtom;
 static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
@@ -538,6 +540,7 @@ cleanup(void)
 	XSync(dpy, False);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
+	events_cleanup();
 }
 
 void
@@ -851,6 +854,7 @@ expose(XEvent *e)
 void
 focus(Client *c)
 {
+	Client *prev = selmon->sel;
 	if (!c || !ISVISIBLE(c))
 		for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
 	if (selmon->sel && selmon->sel != c)
@@ -869,6 +873,17 @@ focus(Client *c)
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
+	
+	if (c && c != prev) {
+		char winid[32], tagstr[16];
+		snprintf(winid, sizeof(winid), "0x%x", c->win);
+		int tagidx = 0;
+		unsigned int t = c->tags;
+		while (!(t & 1) && tagidx < LENGTH(tags)) { t >>= 1; tagidx++; }
+		snprintf(tagstr, sizeof(tagstr), "%d", tagidx + 1);
+		events_trigger("ClientFocus", winid, tagstr, NULL);
+	}
+	
 	selmon->sel = c;
 	drawbars();
 }
@@ -1413,6 +1428,46 @@ propertynotify(XEvent *e)
     else if (ev->window == root && ev->atom == netatom[NetCurrentDesktop]) {
         updatecurrentdesktopfromroot();
     }
+    /* Обработка команд dharmactl */
+    else if (ev->window == root && ev->atom == dharmaCmdAtom) {
+        unsigned long n, bytes_after;
+        unsigned char *data = NULL;
+        Atom type;
+        int format;
+        
+        if (XGetWindowProperty(dpy, root, dharmaCmdAtom, 0, 256, False,
+                XA_STRING, &type, &format, &n, &bytes_after, &data) == Success && data && n > 0) {
+            char cmd[512];
+            snprintf(cmd, sizeof(cmd), "%s", (char *)data);
+            XFree(data);
+            
+            char response[256] = "OK\n";
+            if (strncmp(cmd, "register ", 9) == 0) {
+                char *p = cmd + 9;
+                char *event_name = p;
+                char *script_path = strchr(p, ' ');
+                if (script_path) {
+                    *script_path = '\0';
+                    script_path++;
+                    events_register(event_name, script_path);
+                }
+            } else if (strncmp(cmd, "unregister ", 11) == 0) {
+                char *p = cmd + 11;
+                char *event_name = p;
+                char *script_path = strchr(p, ' ');
+                if (script_path) {
+                    *script_path = '\0';
+                    script_path++;
+                    events_unregister(event_name, script_path);
+                }
+            } else if (strcmp(cmd, "list") == 0) {
+                events_list(response, sizeof(response));
+            }
+            
+            XChangeProperty(dpy, root, dharmaCmdAtom, XA_STRING, 8,
+                PropModeReplace, (unsigned char *)response, strlen(response));
+        }
+    }
 }
 
 void
@@ -1548,11 +1603,11 @@ void
 run(void)
 {
 	XEvent ev;
-	/* main event loop */
+	
 	XSync(dpy, False);
 	while (running && !XNextEvent(dpy, &ev))
 		if (handler[ev.type])
-			handler[ev.type](&ev); /* call handler */
+			handler[ev.type](&ev);
 }
 #include "autostart.h"
 
@@ -1900,6 +1955,7 @@ setup(void)
 	netatom[NetCurrentDesktop] = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
 	netatom[NetDesktopNames] = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
 	netatom[NetWMDesktop] = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
+	dharmaCmdAtom = XInternAtom(dpy, "_DHARMA_CMD", False);
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
@@ -1936,6 +1992,7 @@ setup(void)
 	XSelectInput(dpy, root, wa.event_mask);
 	grabkeys();
 	focus(NULL);
+	events_init();
 }
 void
 setviewport(void){
@@ -2017,10 +2074,23 @@ void
 tag(const Arg *arg)
 {
     if (selmon->sel && arg->ui & TAGMASK) {
+        unsigned int oldtags = selmon->sel->tags;
         selmon->sel->tags = arg->ui & TAGMASK;
-        /* Обновить _NET_WM_DESKTOP */
+        
+        int oldtagidx = 0, newtagidx = 0;
+        unsigned int t = oldtags;
+        while (!(t & 1) && oldtagidx < LENGTH(tags)) { t >>= 1; oldtagidx++; }
+        t = selmon->sel->tags;
+        while (!(t & 1) && newtagidx < LENGTH(tags)) { t >>= 1; newtagidx++; }
+        
+        char oldtagstr[16], newtagstr[16], winid[32];
+        snprintf(oldtagstr, sizeof(oldtagstr), "%d", oldtagidx + 1);
+        snprintf(newtagstr, sizeof(newtagstr), "%d", newtagidx + 1);
+        snprintf(winid, sizeof(winid), "0x%x", selmon->sel->win);
+        events_trigger("ClientTag", winid, oldtagstr, newtagstr);
+        
         int desk = 0;
-        unsigned int t = selmon->sel->tags;
+        t = selmon->sel->tags;
         while (!(t & 1) && desk < LENGTH(tags)) {
             t >>= 1;
             desk++;
@@ -2183,6 +2253,10 @@ unmanage(Client *c, int destroyed)
 {
 	Monitor *m = c->mon;
 	XWindowChanges wc;
+	
+	char winid[32];
+	snprintf(winid, sizeof(winid), "0x%x", c->win);
+	events_trigger("ClientUnmanage", winid, NULL, NULL);
 
 	detach(c);
 	detachstack(c);
@@ -2469,11 +2543,23 @@ updatewmhints(Client *c)
 void
 view(const Arg *arg)
 {
-    if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+    unsigned int oldtag = selmon->tagset[selmon->seltags];
+    if ((arg->ui & TAGMASK) == oldtag)
         return;
     selmon->seltags ^= 1; /* toggle sel tagset */
     if (arg->ui & TAGMASK)
         selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+    
+    int oldtagidx = 0, newtagidx = 0;
+    unsigned int t = oldtag;
+    while (!(t & 1) && oldtagidx < LENGTH(tags)) { t >>= 1; oldtagidx++; }
+    t = selmon->tagset[selmon->seltags];
+    while (!(t & 1) && newtagidx < LENGTH(tags)) { t >>= 1; newtagidx++; }
+    
+    char oldtagstr[16], newtagstr[16];
+    snprintf(oldtagstr, sizeof(oldtagstr), "%d", oldtagidx + 1);
+    snprintf(newtagstr, sizeof(newtagstr), "%d", newtagidx + 1);
+    events_trigger("SwitchTag", oldtagstr, newtagstr, NULL);
     
     /* Обновить _NET_WM_DESKTOP для всех видимых клиентов */
     Client *c;
