@@ -216,7 +216,8 @@ static void resize(Client *c, int x, int y, int w, int h, int interact);
 static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
-static void runAutostart(void);
+static void runAutostart(const char *exedir);
+static void setRestartFlag(const char *exedir);
 static void run(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
@@ -322,38 +323,38 @@ static Window root, wmcheckwin;
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 
-// char* get_executable_path(char *buffer, size_t size) {
-//     ssize_t len = readlink("/proc/self/exe", buffer, size - 1);
-//
-//     if (len != -1) {
-//         buffer[len] = '\0';
-//         return buffer;
-//     }
-//
-//     return NULL;
-// }
-//
-// char* get_executable_dir(char *buffer, size_t size) {
-//     char exe_path[4096];
-//
-//     if (get_executable_path(exe_path, sizeof(exe_path))) {
-//         strncpy(buffer, exe_path, size - 1);
-//         buffer[size - 1] = '\0';
-//
-//         // dirname может вернуть указатель на внутренний буфер
-//         char *dir = dirname(buffer);
-//
-//         // Если buffer и dir указывают на разные области, копируем результат
-//         if (dir != buffer) {
-//             strncpy(buffer, dir, size - 1);
-//             buffer[size - 1] = '\0';
-//         }
-//
-//         return buffer;
-//     }
-//
-//     return NULL;
-// }
+char* get_executable_path(char *buffer, size_t size) {
+    ssize_t len = readlink("/proc/self/exe", buffer, size - 1);
+
+    if (len != -1) {
+        buffer[len] = '\0';
+        return buffer;
+    }
+
+    return NULL;
+}
+
+char* get_executable_dir(char *buffer, size_t size) {
+    char exe_path[4096];
+
+    if (get_executable_path(exe_path, sizeof(exe_path))) {
+        strncpy(buffer, exe_path, size - 1);
+        buffer[size - 1] = '\0';
+
+        // dirname может вернуть указатель на внутренний буфер
+        char *dir = dirname(buffer);
+
+        // Если buffer и dir указывают на разные области, копируем результат
+        if (dir != buffer) {
+            strncpy(buffer, dir, size - 1);
+            buffer[size - 1] = '\0';
+        }
+
+        return buffer;
+    }
+
+    return NULL;
+}
 
 
 
@@ -2773,13 +2774,15 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-	runAutostart();
+	char dir[4096];
+	get_executable_dir(dir, sizeof(dir));
+	runAutostart(dir);
 	run();
 	if(restart){ 
-		// char dir[4096];
-		// get_executable_dir(dir, sizeof(dir));
-		// chdir(dir);
-		// system("make dwm");
+		setRestartFlag(dir);
+		char cmd[4096];
+		snprintf(cmd, sizeof(cmd), "make -C %s dwm", dir);
+		system(cmd);
 		execvp(argv[0], argv);
 	}
 	cleanup();

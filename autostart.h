@@ -1,13 +1,34 @@
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 void
-runAutostart(void) {
-	system("~/dwm/autostart");
-	/*system("feh --bg-scale ~/wallpaper/bg1.jpg &");
-	system("feh --bg-scale ~/wallpaper/bg1.jpg &");
-	system("compton -f --vsync opengl-oml &");
-	system("~/dwm/status &");
-	system("syndaemon -i 0.25 &");
-	system("xss-lock ~/dwm/lock &");
-	system("sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:alt_shift_toggle' &");
-*/
+runAutostart(const char *exedir) {
+	char always[4096];
+	snprintf(always, sizeof(always), "%s/autostart_always", exedir);
+	if (access(always, F_OK) == 0)
+		system(always);
+
+	char flagfile[4096];
+	snprintf(flagfile, sizeof(flagfile), "%s/.autostarted", exedir);
+
+	if (access(flagfile, F_OK) == 0) {
+		unlink(flagfile);
+		return;
+	}
+
+	char script[4096];
+	snprintf(script, sizeof(script), "%s/autostart", exedir);
+	system(script);
+}
+
+void
+setRestartFlag(const char *exedir) {
+	char flagfile[4096];
+	snprintf(flagfile, sizeof(flagfile), "%s/.autostarted", exedir);
+	FILE *f = fopen(flagfile, "w");
+	if (f)
+		fclose(f);
 }
 

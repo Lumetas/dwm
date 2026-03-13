@@ -41,6 +41,7 @@ install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	ln -sf ${MAKEFILE_DIR}/dwm ${DESTDIR}${PREFIX}/bin/dwm
 	cp -f dharmactl ${DESTDIR}${PREFIX}/bin
+	cp -f dwm.desktop /usr/share/xsessions/dwm.desktop
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
 	chmod +x ${DESTDIR}${PREFIX}/bin/dharmactl
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
@@ -51,6 +52,7 @@ init:
 	mkdir -p ~/.config/dharma
 	ln -sf ${MAKEFILE_DIR}/config.h ~/.config/dharma/config.h
 	ln -sf ${MAKEFILE_DIR}/autostart ~/.config/dharma/autostart
+	ln -sf ${MAKEFILE_DIR}/autostart_always ~/.config/dharma/autostart_always
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
