@@ -41,7 +41,7 @@
 #endif /* XINERAMA */
 #include <X11/extensions/shape.h>
 #include <X11/Xft/Xft.h>
-
+#include <libgen.h>
 #include "drw.h"
 #include "util.h"
 #include "events.h"
@@ -320,6 +320,42 @@ static Window root, wmcheckwin;
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+
+
+// char* get_executable_path(char *buffer, size_t size) {
+//     ssize_t len = readlink("/proc/self/exe", buffer, size - 1);
+//
+//     if (len != -1) {
+//         buffer[len] = '\0';
+//         return buffer;
+//     }
+//
+//     return NULL;
+// }
+//
+// char* get_executable_dir(char *buffer, size_t size) {
+//     char exe_path[4096];
+//
+//     if (get_executable_path(exe_path, sizeof(exe_path))) {
+//         strncpy(buffer, exe_path, size - 1);
+//         buffer[size - 1] = '\0';
+//
+//         // dirname может вернуть указатель на внутренний буфер
+//         char *dir = dirname(buffer);
+//
+//         // Если buffer и dir указывают на разные области, копируем результат
+//         if (dir != buffer) {
+//             strncpy(buffer, dir, size - 1);
+//             buffer[size - 1] = '\0';
+//         }
+//
+//         return buffer;
+//     }
+//
+//     return NULL;
+// }
+
+
 
 void
 applyrules(Client *c)
@@ -2739,7 +2775,13 @@ main(int argc, char *argv[])
 	scan();
 	runAutostart();
 	run();
-	if(restart) execvp(argv[0], argv);
+	if(restart){ 
+		// char dir[4096];
+		// get_executable_dir(dir, sizeof(dir));
+		// chdir(dir);
+		// system("make dwm");
+		execvp(argv[0], argv);
+	}
 	cleanup();
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;

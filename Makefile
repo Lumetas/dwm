@@ -5,6 +5,7 @@ include config.mk
 
 SRC = drw.c dwm.c util.c events.c
 OBJ = ${SRC:.c=.o}
+MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 all: options dwm
 
@@ -38,13 +39,18 @@ dist: clean
 
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
-	cp -f dwm ${DESTDIR}${PREFIX}/bin
+	ln -sf ${MAKEFILE_DIR}/dwm ${DESTDIR}${PREFIX}/bin/dwm
 	cp -f dharmactl ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
 	chmod +x ${DESTDIR}${PREFIX}/bin/dharmactl
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
+
+init:
+	mkdir -p ~/.config/dharma
+	ln -sf ${MAKEFILE_DIR}/config.h ~/.config/dharma/config.h
+	ln -sf ${MAKEFILE_DIR}/autostart ~/.config/dharma/autostart
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
