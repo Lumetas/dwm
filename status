@@ -1,8 +1,9 @@
 #!/bin/bash
 while true
 do
-	a=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep perc);
-	bat=${a//    percentage:          /};
+	# a=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep perc);
+	# bat=${a//    percentage:          /};
+	bat=$(cat /sys/class/power_supply/BAT0/capacity)%
 	# sound=$(amixer -c 0 sget Master |awk '/Mono:/ {print($6$4)}');
 	time=$(date '+%H:%M > %d');
 	layBool=$(xset -q | sed -rn 's/.*LED mask.*(.)[[:xdigit:]]{3}$/\1/p');

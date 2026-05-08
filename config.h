@@ -1,30 +1,69 @@
 /* See LICENSE file for copyright and license details. */
-static const unsigned int borderpx  = 2;        /* border pixel of window - увеличен для лучшей видимости */
-static const unsigned int gappx     = 10;       /* gaps between windows */ 
-static const unsigned int snap      = 32;       /* snap pixel */
-static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10", "FontAwesome:size=10" }; /* добавлен FontAwesome для иконок */
-static const char dmenufont[]       = "monospace:size=10";
 
-/* Цветовая схема с ярко-белой обводкой */
-static const char col_black[]       = "#000000";
-static const char col_dark_gray[]   = "#222222";
-static const char col_gray[]        = "#444444";
-static const char col_light_gray[]  = "#888888";
-static const char col_lighter_gray[]= "#bbbbbb";
-static const char col_white[]       = "#ffffff";
-static const char col_bright_white[]= "#ffffff"; /* ярко-белый для активного окна */
+/* appearance */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int border_radius = 0;
+static const unsigned int gappih    = 13;
+static const unsigned int gappiv    = 13;
+static const unsigned int gappoh    = 13;
+static const unsigned int gappov    = 13;
+static const unsigned int gapp_top = 41;
+static const int smartgaps          = 0;
+static const int showbar            = 0;        /* 0 means no bar */
+static const int topbar             = 0;        /* 0 means bottom bar */
+static const char *fonts[]          = { "monospace:size=14", "FontAwesome:size=14" }; /* добавлен FontAwesome для иконок */
+static const char dmenufont[]       = "monospace:size=14";
+/* Цветовая схема на основе новой палитры */
+static const char col_dark0[]      = "#051b35";   /* Глубокий синий */
+static const char col_dark1[]      = "#0e4466";   /* Тёмный сине-серый */
+static const char col_dark2[]      = "#1d5e72";   /* Серо-синий */
+static const char col_dark3[]      = "#246f8b";   /* Умеренный синий */
+static const char col_dark4[]      = "#308fad";   /* Светлый синий */
+static const char col_light0[]     = "#d6b8a1";   /* Светло-бежевый */
+static const char col_light1[]     = "#bb794a";   /* Коричневый */
+static const char col_light2[]     = "#a34c65";   /* Приглушённый розовый */
+static const char col_light3[]     = "#644862";   /* Тёмный фиолетово-коричневый */
+static const char col_light4[]     = "#53b0bc";   /* Бирюзовый */
+
+/* Акцентные цвета */
+static const char col_accent_blue[] = "#308fad";
+static const char col_accent_green[] = "#53b0bc";
+static const char col_accent_yellow[] = "#d6b8a1";
+static const char col_accent_red[] = "#a34c65";
+
+/* Текстовые цвета */
+static const char col_text_normal[] = "#d6b8a1";
+static const char col_text_selected[] = "#ffffff";
+static const char col_text_dim[] = "#246f8b";
+
+void EnvConfig() { 
+	setenv("MOZ_USE_XINPUT2", "1", 1);
+}
+
+
+#define WMNAME "Dharma"
+#define WMNAME_LEN 6
 
 static const char *colors[][3]      = {
-	/*               fg              bg              border   */
-	[SchemeNorm] = { col_lighter_gray, col_dark_gray, col_gray },
-	[SchemeSel]  = { col_white, col_black, col_bright_white }, /* ярко-белая обводка активного окна */
+	/*               fg (текст)        bg (фон)        border   */
+	[SchemeNorm] = { col_text_normal,     col_dark0,      col_light3 },	// passive tag
+	[SchemeSel]  = { col_text_selected,   col_dark2,      col_light4 }, // active tag
+	[SchemeApp] =  { col_text_selected,   col_dark0,      col_light0 }, // appname
 };
 
-/* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/* Дополнительные схемы для bar (если используются в config.def.h) */
+static const char col_bar_bg[]      = "#0C0B15";   /* Фон бара */
+static const char col_bar_fg[]      = "#D18AFF";   /* Текст бара */
+// static const char col_bar_active[]  = "#E0B0FF";   /* Активный тег */
+static const char col_bar_active[]  = "#5A5775";   /* Активный тег */
+static const char col_bar_inactive[]= "#5A5775";   /* Неактивный тег */
+// static const char col_bar_urgent[]  = "#FF6B8B";   /* Срочный тег */
+static const char col_bar_urgent[]  = "#5A5775";   /* Срочный тег */
 
+/* tagging */
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+#define TAG(n) (1 << ((n) - 1))
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -32,7 +71,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ NULL, "Navigator", NULL, TAG(1), 0, -1 },
 };
 
 /* layout(s) */
@@ -59,7 +98,6 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
-/* Автоперезапуск dwm */
 static const int restartdwm = 1; /* включить автоперезапуск */
 
 /* Медиаклавиши */
@@ -71,31 +109,53 @@ static const int restartdwm = 1; /* включить автоперезапус�
 #define XF86XK_AudioPlay        0x1008ff14
 #define XF86XK_AudioPrev        0x1008ff16
 #define XF86XK_AudioNext        0x1008ff17
+#define XF86XK_KbLightUp		0x1008ff05
+#define XF86XK_KbLightDown		0x1008ff06
 
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 
-/* Заменяем dmenu на rofi */
-static const char *roficmd[] = { "rofi", "-show", "drun", "-show-icons", NULL };
-static const char *termcmd[]  = { "kitty", NULL };
-static const char *kando[] = { "kando", "-m", "dwm", NULL};
+/* Команда для увеличения яркости клавиатуры с ограничением до 255 */
+static const char *kbd_backlight_up[] = { 
+    "/bin/bash", "-c", 
+    "brightness=$(cat /sys/class/leds/smc::kbd_backlight/brightness); "
+    "new_brightness=$((brightness + 50)); "
+    "if [ $new_brightness -gt 255 ]; then new_brightness=255; fi; "
+    "echo $new_brightness > /sys/class/leds/smc::kbd_backlight/brightness", 
+    NULL 
+};
 
+/* Команда для уменьшения яркости клавиатуры с ограничением до 0 */
+static const char *kbd_backlight_down[] = { 
+    "/bin/bash", "-c", 
+    "brightness=$(cat /sys/class/leds/smc::kbd_backlight/brightness); "
+    "new_brightness=$((brightness - 50)); "
+    "if [ $new_brightness -lt 0 ]; then new_brightness=0; fi; "
+    "echo $new_brightness > /sys/class/leds/smc::kbd_backlight/brightness", 
+    NULL 
+};
+
+static const char *roficmd[] = { "dmenu_apps", NULL };
+static const char *termcmd[]  = { "namaste", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = roficmd } },
-	{ MODKEY|ShiftMask,             XK_d,      spawn,          {.v = kando } },
+	// { MODKEY|ShiftMask,             XK_d,      spawn,          {.v = kando } },
 	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} }, /* перезапуск dwm с сохранением окон */
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/zen/zen", NULL}}},
+	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "firefox-esr", NULL}}},
 	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "flameshot gui", NULL}}},
 	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
 	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
-	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/apps/neovide", NULL}}},
+	{ MODKEY,                       XK_w,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "dmenu_windows", NULL}}},
+	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "nvide", NULL}}},
 	
 	/* Медиаклавиши */
 	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL}} },
 	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%", NULL}} },
+    { 0, XF86XK_KbLightUp,   spawn, {.v = kbd_backlight_up} },
+    { 0, XF86XK_KbLightDown, spawn, {.v = kbd_backlight_down} },
 	{ 0,                            XF86XK_AudioMute,        spawn, {.v = (const char*[]){"pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL}} },
 	{ 0,                            XF86XK_MonBrightnessUp,  spawn, {.v = (const char*[]){"brightnessctl", "set", "+5%", NULL}} },
 	{ 0,                            XF86XK_MonBrightnessDown,spawn, {.v = (const char*[]){"brightnessctl", "set", "5%-", NULL}} },
@@ -116,9 +176,12 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	// { MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[2]} },
+    // { MODKEY,                       XK_f,      fullscreen,     {0} },
+	// { MODKEY|ShiftMask,             XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_f,      togglefloating,      {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	// { MODKEY,                       XK_space,  togglefloating, {0} },
+	// { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+	// { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
@@ -132,10 +195,15 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_0,                      9)
 	{ MODKEY|ShiftMask,             XK_c,      quit,           {0} },
+	{ MODKEY|ShiftMask,				XK_r,      quit,           {1} }, 
+    // gaps
+    { MODKEY|ShiftMask,             XK_g,      togglegaps,     {0} },
 };
 
 /* button definitions */
+/* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
@@ -150,3 +218,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+
