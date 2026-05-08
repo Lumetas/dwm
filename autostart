@@ -1,8 +1,8 @@
 #!/bin/bash
 dunst &
 picom --backend glx &
-feh --bg-scale ~/.wallpapers/bg1.jpg &
-# sudo chown lum /sys/class/leds/smc::kbd_backlight/brightness
+feh --bg-scale ~/.wallpapers/bg5.jpg &
+sudo chown lum /sys/class/leds/smc::kbd_backlight/brightness
 ( while true; do dmenu_app_list -u && sleep 460; done) &
 # ~/dwm/status &
 xss-lock ~/dwm/lock &
