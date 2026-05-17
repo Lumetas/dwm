@@ -129,6 +129,7 @@ struct Monitor {
  	int gappoh;           /* horizontal outer gaps */
  	int gappov;           /* vertical outer gaps */
 	int gapp_top;
+	int bar_height;
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -744,12 +745,13 @@ createmon(void)
 	m->mfact = mfact;
 	m->nmaster = nmaster;
 	m->showbar = showbar;
-	m->topbar = topbar;
- 	m->gappih = gappih;
+  m->topbar = topbar;
+  m->bar_height = bar_height;
+  m->gappih = gappih;
  	m->gappiv = gappiv;
  	m->gappoh = gappoh;
  	m->gappov = gappov;
-	m->gapp_top = gapp_top;
+	m->gapp_top = gapp_top + bar_height;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -1303,7 +1305,7 @@ monocle(Monitor *m)
 	if (n > 0) /* override layout symbol */
 		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
+		resize(c, m->wx, m->wy + monocle_bar_height, m->ww - 2 * c->bw, m->wh - monocle_bar_height - 2 * c->bw, 0);
 }
 
 void
