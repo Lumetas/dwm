@@ -7,34 +7,33 @@ static const unsigned int border_radius = 0;
 static const unsigned int gappih    = 13;
 static const unsigned int monocle_bar_height = 32;
 static const unsigned int bar_height = 24;
+static const unsigned int line_size  = 2;       /* underline thickness for active/urgent tags */
+static const unsigned int tag_gap    = 8;       /* gap between workspace tags in bar */
 static const unsigned int gappiv    = 13;
 static const unsigned int gappoh    = 13;
 static const unsigned int gappov    = 13;
 static const unsigned int gapp_top = 13;
 static const int smartgaps          = 0;
-static const int showbar            = 0;        /* 0 means no bar */
-static const int topbar             = 0;        /* 0 means bottom bar */
+static const int showbar            = 1;        /* 0 means no bar */
+static const int topbar             = 1;        /* 1 means bottom bar */
 static const char *fonts[]          = { "monospace:size=14", "FontAwesome:size=14" }; /* добавлен FontAwesome для иконок */
 static const char dmenufont[]       = "monospace:size=14";
-/* Цветовая схема на основе новой палитры */
 static const char col_dark0[]      = "#051b35";   /* Глубокий синий */
-static const char col_dark1[]      = "#0e4466";   /* Тёмный сине-серый */
-static const char col_dark2[]      = "#1d5e72";   /* Серо-синий */
-static const char col_dark3[]      = "#246f8b";   /* Умеренный синий */
-static const char col_dark4[]      = "#308fad";   /* Светлый синий */
-static const char col_light0[]     = "#d6b8a1";   /* Светло-бежевый */
-static const char col_light1[]     = "#bb794a";   /* Коричневый */
-static const char col_light2[]     = "#a34c65";   /* Приглушённый розовый */
-static const char col_light3[]     = "#644862";   /* Тёмный фиолетово-коричневый */
-static const char col_light4[]     = "#53b0bc";   /* Бирюзовый */
+static const char col_dark1[]      = "#0e4466";   
+static const char col_dark2[]      = "#1d5e72";   
+static const char col_dark3[]      = "#246f8b";   
+static const char col_dark4[]      = "#308fad";   
+static const char col_light0[]     = "#d6b8a1";   
+static const char col_light1[]     = "#bb794a";   
+static const char col_light2[]     = "#a34c65";   
+static const char col_light3[]     = "#644862";   
+static const char col_light4[]     = "#53b0bc";   
 
-/* Акцентные цвета */
 static const char col_accent_blue[] = "#308fad";
 static const char col_accent_green[] = "#53b0bc";
 static const char col_accent_yellow[] = "#d6b8a1";
 static const char col_accent_red[] = "#a34c65";
 
-/* Текстовые цвета */
 static const char col_text_normal[] = "#d6b8a1";
 static const char col_text_selected[] = "#ffffff";
 static const char col_text_dim[] = "#246f8b";
@@ -49,9 +48,10 @@ void EnvConfig() {
 
 static const char *colors[][3]      = {
 	/*               fg (текст)        bg (фон)        border   */
-	[SchemeNorm] = { col_text_normal,     col_dark0,      col_light3 },	// passive tag
-	[SchemeSel]  = { col_text_selected,   col_dark2,      col_light4 }, // active tag
-	[SchemeApp] =  { col_text_selected,   col_dark0,      col_light0 }, // appname
+	[SchemeNorm] = { "#aaaaaa",         col_dark0,      col_light3 },	// inactive occupied tag
+	[SchemeSel]  = { "#ffffff",         "#00000000",      col_light4 }, // active tag
+	[SchemeApp]  = { "#ffffff",         col_dark0,      col_light0 }, // appname
+	[SchemeUrg]  = { col_accent_red,    col_dark0,      col_accent_red }, // urgent tag
 };
 
 /* Дополнительные схемы для bar (если используются в config.def.h) */
@@ -62,6 +62,53 @@ static const char col_bar_active[]  = "#5A5775";   /* Активный тег */
 static const char col_bar_inactive[]= "#5A5775";   /* Неактивный тег */
 // static const char col_bar_urgent[]  = "#FF6B8B";   /* Срочный тег */
 static const char col_bar_urgent[]  = "#5A5775";   /* Срочный тег */
+
+/* status — редактируй содержимое статус-бара здесь */
+static void
+updatestatus_c(void)
+{
+	char bat_stat, bat_str[16], tm_str[32], lay[8];
+
+	/* battery status */
+	FILE *f = fopen("/sys/class/power_supply/BAT0/status", "r");
+	if (f) {
+		char s[16];
+		if (fscanf(f, "%15s", s) == 1) {
+			if      (s[0] == 'C') bat_stat = 'C';
+			else if (s[0] == 'D') bat_stat = 'D';
+			else                  bat_stat = 'F';
+		} else {
+			bat_stat = '?';
+		}
+		fclose(f);
+	} else {
+		bat_stat = '?';
+	}
+
+	/* battery capacity */
+	int cap = -1;
+	f = fopen("/sys/class/power_supply/BAT0/capacity", "r");
+	if (f) {
+		if (fscanf(f, "%d", &cap) != 1) cap = -1;
+		fclose(f);
+	}
+
+	snprintf(bat_str, sizeof(bat_str), "%c %d%%", bat_stat, cap > 0 ? cap : 0);
+
+	/* time */
+	time_t t = time(NULL);
+	struct tm *lt = localtime(&t);
+	strftime(tm_str, sizeof(tm_str), "%H:%M %a %d", lt);
+
+	/* keyboard layout */
+	XkbStateRec xkb_state;
+	if (XkbGetState(dpy, XkbUseCoreKbd, &xkb_state) == Success)
+		strcpy(lay, xkb_state.group == 0 ? "us" : "ru");
+	else
+		strcpy(lay, "?");
+
+	setstatus(" %s %s %s", bat_str, lay, tm_str);
+}
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };

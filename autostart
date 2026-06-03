@@ -1,12 +1,12 @@
 #!/bin/bash
 dunst &
 picom --backend glx &
-feh --bg-scale ~/.wallpapers/bg5.jpg &
+feh --bg-scale ~/.wallpapers/bg1.jpg &
 sudo chown lum /sys/class/leds/smc::kbd_backlight/brightness
 ( while true; do dmenu_app_list -u && sleep 460; done) &
 # ~/dwm/status &
 xss-lock ~/dwm/lock &
 sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:win_space_toggle' &
 xset r rate 200 50 &
-~/dwm/polybar &
+# ~/dwm/polybar &
 echo 1 >> ~/log

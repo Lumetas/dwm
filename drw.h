@@ -24,10 +24,14 @@ typedef struct {
 	GC gc;
 	Clr *scheme;
 	Fnt *fonts;
+	Visual *visual;
+	Colormap colormap;
+	int depth;
 } Drw;
 
 /* Drawable abstraction */
-Drw *drw_create(Display *dpy, int screen, Window win, unsigned int w, unsigned int h);
+Drw *drw_create(Display *dpy, int screen, Window win, unsigned int w, unsigned int h,
+                Visual *visual, Colormap colormap, int depth);
 void drw_resize(Drw *drw, unsigned int w, unsigned int h);
 void drw_free(Drw *drw);
 
@@ -48,6 +52,7 @@ void drw_cur_free(Drw *drw, Cur *cursor);
 /* Drawing context manipulation */
 void drw_setfontset(Drw *drw, Fnt *set);
 void drw_setscheme(Drw *drw, Clr *scm);
+void drw_set_visual(Drw *drw, Visual *visual, Colormap colormap, int depth);
 
 /* Drawing functions */
 void drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert);
