@@ -216,16 +216,27 @@ static Key keys[] = {
 	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "nvide", NULL}}},
 	
 	/* Медиаклавиши */
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL}} },
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%", NULL}} },
-    { 0, XF86XK_KbLightUp,   spawn, {.v = kbd_backlight_up} },
-    { 0, XF86XK_KbLightDown, spawn, {.v = kbd_backlight_down} },
-	{ 0,                            XF86XK_AudioMute,        spawn, {.v = (const char*[]){"pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL}} },
-	{ 0,                            XF86XK_MonBrightnessUp,  spawn, {.v = (const char*[]){"brightnessctl", "set", "+5%", NULL}} },
-	{ 0,                            XF86XK_MonBrightnessDown,spawn, {.v = (const char*[]){"brightnessctl", "set", "5%-", NULL}} },
 	{ 0,                            XF86XK_AudioPlay,        spawn, {.v = (const char*[]){"playerctl", "play-pause", NULL}} },
 	{ 0,                            XF86XK_AudioPrev,        spawn, {.v = (const char*[]){"playerctl", "previous", NULL}} },
 	{ 0,                            XF86XK_AudioNext,        spawn, {.v = (const char*[]){"playerctl", "next", NULL}} },
+
+
+
+	// { 0,                            XF86XK_MonBrightnessUp,  spawn, {.v = (const char*[]){"brightnessctl", "set", "+5%", NULL}} },
+	// { 0,                            XF86XK_MonBrightnessDown,spawn, {.v = (const char*[]){"brightnessctl", "set", "5%-", NULL}} },
+	// { 0,                            XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL}} },
+	// { 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%", NULL}} },
+	// { 0,                            XF86XK_AudioMute,        spawn, {.v = (const char*[]){"pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL}} },
+	//    { 0, XF86XK_KbLightUp,   spawn, {.v = kbd_backlight_up} },
+	//    { 0, XF86XK_KbLightDown, spawn, {.v = kbd_backlight_down} },
+
+	{ 0, XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls volume -", NULL}} },
+	{ 0, XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls volume +", NULL}} },
+	{ 0, XF86XK_AudioMute,        spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls volume mute", NULL}} },
+	{ 0, XF86XK_MonBrightnessUp,   spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls screen +", NULL}} },
+	{ 0, XF86XK_MonBrightnessDown, spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls screen -", NULL}} },
+	{ 0, XF86XK_KbLightUp,         spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls kbd +", NULL}} },
+	{ 0, XF86XK_KbLightDown,       spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls kbd -", NULL}} },
 	
 	
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },

@@ -1,0 +1,139 @@
+#!/bin/bash
+
+# ============================================
+# OSD notifier for dwm using dunst
+# ============================================
+
+TIMEOUT=1000  # миллисекунды
+URGENCY="normal"
+
+# Уникальный ID для обновления одного и того же уведомления
+NOTIFY_ID=8888
+
+show_notify() {
+    local name="$1"
+    local percent="$2"
+    local status="$3"
+    
+    local text=""
+    local icon=""
+    
+    case "$name" in
+        volume)
+            if [ "$status" = "muted" ]; then
+                text="MUTED"
+                icon="audio-volume-muted"
+            else
+                text="${percent}%"
+                if [ "$percent" -lt 30 ]; then
+                    icon="audio-volume-low"
+                elif [ "$percent" -lt 70 ]; then
+                    icon="audio-volume-medium"
+                else
+                    icon="audio-volume-high"
+                fi
+            fi
+            ;;
+        screen)
+            text="${percent}%"
+            if [ "$percent" -lt 30 ]; then
+                icon="display-brightness-low"
+            elif [ "$percent" -lt 70 ]; then
+                icon="display-brightness-medium"
+            else
+                icon="display-brightness-high"
+            fi
+            ;;
+        kbd)
+            text="${percent}%"
+            icon="input-keyboard"
+            ;;
+    esac
+    
+    # Отправляем уведомление (уникальный ID для обновления, а не создания нового)
+    if [ "$status" = "muted" ]; then
+        dunstify -u "$URGENCY" -t "$TIMEOUT" -r "$NOTIFY_ID" -h string:x-dunst-stack-tag:"$name" "$name: $text"
+    else
+        dunstify -u "$URGENCY" -t "$TIMEOUT" -r "$NOTIFY_ID" -h string:x-dunst-stack-tag:"$name" -h int:value:"$percent" "$name: $text"
+    fi
+}
+
+# ============================================
+# VOLUME
+# ============================================
+volume_control() {
+    local action="$1"
+    
+    case "$action" in
+        +) pactl set-sink-volume @DEFAULT_SINK@ +5% ;;
+        -) pactl set-sink-volume @DEFAULT_SINK@ -5% ;;
+        mute) pactl set-sink-mute @DEFAULT_SINK@ toggle ;;
+    esac
+    
+    local volume=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -Po '\d+(?=%)' | head -1)
+    local is_muted=$(pactl get-sink-mute @DEFAULT_SINK@ | grep -Po '(?<=Mute: )(yes|no)')
+    
+    if [ "$is_muted" = "yes" ]; then
+        show_notify "volume" "" "muted"
+    else
+        show_notify "volume" "$volume" "normal"
+    fi
+}
+
+# ============================================
+# SCREEN
+# ============================================
+screen_control() {
+    local action="$1"
+    
+    case "$action" in
+        +) brightnessctl set +5% ;;
+        -) brightnessctl set 5%- ;;
+    esac
+    
+    local current=$(brightnessctl get)
+    local max=$(brightnessctl max)
+    local percent=$((current * 100 / max))
+    
+    show_notify "screen" "$percent" "normal"
+}
+
+# ============================================
+# KBD
+# ============================================
+kbd_control() {
+    local action="$1"
+    local kbd_path="/sys/class/leds/smc::kbd_backlight/brightness"
+    
+    [ -f "/sys/class/leds/asus::kbd_backlight/brightness" ] && kbd_path="/sys/class/leds/asus::kbd_backlight/brightness"
+    [ -f "/sys/class/leds/apple::kbd_backlight/brightness" ] && kbd_path="/sys/class/leds/apple::kbd_backlight/brightness"
+    
+    if [ ! -f "$kbd_path" ]; then
+        show_notify "kbd" "" "error"
+        return
+    fi
+    
+    local current=$(cat "$kbd_path")
+    local new=$current
+    
+    case "$action" in
+        +) new=$((current + 25)); [ "$new" -gt 255 ] && new=255 ;;
+        -) new=$((current - 25)); [ "$new" -lt 0 ] && new=0 ;;
+    esac
+    
+    echo "$new" | tee "$kbd_path" > /dev/null
+    local percent=$((new * 100 / 255))
+    
+    show_notify "kbd" "$percent" "normal"
+}
+
+# ============================================
+# MAIN
+# ============================================
+case "$1" in
+    kbd)     kbd_control "$2" ;;
+    screen)  screen_control "$2" ;;
+    volume)  volume_control "$2" ;;
+    *)       show_notify "error" "" "" ;;
+esac
+
