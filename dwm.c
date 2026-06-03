@@ -280,6 +280,8 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static Visual *argb_visual(Display *dpy, int screen);
 static void setstatus(const char *fmt, ...);
+static char* get_battery_icon(int number);
+static char* get_current_animation_char(void);
 static void updatestatus_c(void);
 
 /* variables */
@@ -325,12 +327,27 @@ static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 static Visual *bar_visual_argb;
 static Colormap bar_cmap_argb;
-
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+
+int batteryAnimationCurrent = 0;
+char* batteryAnimation[5] = { "", "", "", "", "" };
+
+char* get_battery_icon(int number) {
+	return batteryAnimation[number];
+}
+
+char* get_current_animation_char(void) {
+	if (batteryAnimationCurrent >= 5) {
+		batteryAnimationCurrent = 0;
+	}
+	char* animation = batteryAnimation[batteryAnimationCurrent];
+	batteryAnimationCurrent++;
+	return animation;
+}
 
 
 char* get_executable_path(char *buffer, size_t size) {
