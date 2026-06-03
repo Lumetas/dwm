@@ -16,7 +16,7 @@ static const unsigned int gapp_top = 13;
 static const int smartgaps          = 0;
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 1 means bottom bar */
-static const char *fonts[]          = { "monospace:Bold:size=12", "FontAwesome:Bold:size=12" }; /* добавлен FontAwesome для иконок */
+static const char *fonts[]          = { "monospace:Bold:size=13", "FontAwesome:Bold:size=13" }; /* добавлен FontAwesome для иконок */
 static const char dmenufont[]       = "monospace:size=14";
 static const char col_dark0[]      = "#051b35";   /* Глубокий синий */
 static const char col_dark1[]      = "#0e4466";   
