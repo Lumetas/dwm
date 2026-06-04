@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================
-# OSD notifier for dwm using dunst
+# OSD notifier for dharma using dunst
 # ============================================
 
 TIMEOUT=1000  # миллисекунды

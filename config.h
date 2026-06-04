@@ -159,10 +159,10 @@ static const Layout layouts[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
+/* helper for spawning shell commands in the pre dharma-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
-static const int restartdwm = 1; /* включить автоперезапуск */
+static const int restartdharma = 1; /* включить автоперезапуск */
 
 /* Медиаклавиши */
 #define XF86XK_AudioLowerVolume 0x1008ff11
@@ -205,13 +205,13 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = roficmd } },
 	// { MODKEY|ShiftMask,             XK_d,      spawn,          {.v = kando } },
-	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} }, /* перезапуск dwm с сохранением окон */
+	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} }, /* перезапуск dharma с сохранением окон */
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_u,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "firefox-esr", NULL}}},
 	{ MODKEY,                       XK_p,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "flameshot gui", NULL}}},
-	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/screen -a", NULL}}},
-	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dwm/lock", NULL}}},
+	{ MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dharma/screen -a", NULL}}},
+	{ MODKEY,                       XK_m,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "~/dharma/lock", NULL}}},
 	{ MODKEY,                       XK_w,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "dmenu_windows", NULL}}},
 	{ MODKEY,                       XK_n,      spawn,          {.v = (const char*[]){"/bin/sh", "-c", "nvide", NULL}}},
 	
@@ -230,13 +230,13 @@ static Key keys[] = {
 	//    { 0, XF86XK_KbLightUp,   spawn, {.v = kbd_backlight_up} },
 	//    { 0, XF86XK_KbLightDown, spawn, {.v = kbd_backlight_down} },
 
-	{ 0, XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls volume -", NULL}} },
-	{ 0, XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls volume +", NULL}} },
-	{ 0, XF86XK_AudioMute,        spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls volume mute", NULL}} },
-	{ 0, XF86XK_MonBrightnessUp,   spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls screen +", NULL}} },
-	{ 0, XF86XK_MonBrightnessDown, spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls screen -", NULL}} },
-	{ 0, XF86XK_KbLightUp,         spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls kbd +", NULL}} },
-	{ 0, XF86XK_KbLightDown,       spawn, {.v = (const char*[]){"sh", "-c", "~/dwm/keyboard_controls kbd -", NULL}} },
+	{ 0, XF86XK_AudioLowerVolume, spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls volume -", NULL}} },
+	{ 0, XF86XK_AudioRaiseVolume, spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls volume +", NULL}} },
+	{ 0, XF86XK_AudioMute,        spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls volume mute", NULL}} },
+	{ 0, XF86XK_MonBrightnessUp,   spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls screen +", NULL}} },
+	{ 0, XF86XK_MonBrightnessDown, spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls screen -", NULL}} },
+	{ 0, XF86XK_KbLightUp,         spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls kbd +", NULL}} },
+	{ 0, XF86XK_KbLightDown,       spawn, {.v = (const char*[]){"sh", "-c", "~/dharma/keyboard_controls kbd -", NULL}} },
 	
 	
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },

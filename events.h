@@ -1,5 +1,5 @@
-#ifndef DWM_EVENTS_H
-#define DWM_EVENTS_H
+#ifndef DHARMA_EVENTS_H
+#define DHARMA_EVENTS_H
 
 #include <X11/Xlib.h>
 

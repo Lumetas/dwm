@@ -1,6 +1,6 @@
-Dynamic Window Manager(dwm) 6.2 with 3 patches applied:
+Dynamic Window Manager(dharma) 6.2 with 3 patches applied:
 - fullscreen
 - vanitygaps
-- dylanaraps' [openbox rounded corner patch](https://github.com/dylanaraps/openbox-patched), adapted for dwm
+- dylanaraps' [openbox rounded corner patch](https://github.com/dylanaraps/openbox-patched), adapted for dharma
 
 ![Screenshot](/screenshot.jpg)

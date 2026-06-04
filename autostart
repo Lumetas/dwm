@@ -3,6 +3,6 @@ dunst &
 picom --backend glx &
 feh --bg-scale ~/.wallpapers/bg1.jpg &
 ( while true; do dmenu_app_list -u && sleep 460; done) &
-xss-lock ~/dwm/lock &
+xss-lock ~/dharma/lock &
 sleep 2 && setxkbmap -option 'ctrl:nocaps' ; setxkbmap 'us,ru' ',winkeys' 'grp:win_space_toggle' &
 xset r rate 200 50 &

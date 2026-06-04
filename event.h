@@ -1,5 +1,5 @@
-#ifndef DWM_EVENT_H
-#define DWM_EVENT_H
+#ifndef DHARMA_EVENT_H
+#define DHARMA_EVENT_H
 
 typedef enum {
 	EVT_VIEW,
@@ -29,4 +29,4 @@ void event_register(EventType type, void (*callback)(const Arg *, void *), void 
 void event_unregister(EventType type, void (*callback)(const Arg *, void *));
 void event_emit(EventType type, const Arg *arg);
 
-#endif /* DWM_EVENT_H */
+#endif /* DHARMA_EVENT_H */
