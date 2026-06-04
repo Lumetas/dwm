@@ -84,13 +84,73 @@ static void updatestatus_c(void)
 		bat_stat = '?';
 	}
 
-	/* battery capacity */
+	/* battery capacity - CORRECT VERSION */
 	int cap = -1;
-	f = fopen("/sys/class/power_supply/BAT0/capacity", "r");
-	if (f) {
-		if (fscanf(f, "%d", &cap) != 1) cap = -1;
+	
+	// Try method 1: ENERGY (most accurate, already in uWh)
+	long energy_now = 0, energy_full = 0;
+	f = fopen("/sys/class/power_supply/BAT0/energy_now", "r");
+	if (f && fscanf(f, "%ld", &energy_now) == 1) {
 		fclose(f);
+		f = fopen("/sys/class/power_supply/BAT0/energy_full", "r");
+		if (f && fscanf(f, "%ld", &energy_full) == 1 && energy_full > 0) {
+			cap = (int)((energy_now * 100) / energy_full);
+		}
+		if (f) fclose(f);
 	}
+	
+	// Try method 2: CHARGE + VOLTAGE (if ENERGY not available)
+	if (cap < 0) {
+		long charge_now = 0, charge_full = 0, voltage = 0;
+		
+		f = fopen("/sys/class/power_supply/BAT0/charge_now", "r");
+		if (f && fscanf(f, "%ld", &charge_now) == 1) {
+			fclose(f);
+			f = fopen("/sys/class/power_supply/BAT0/charge_full", "r");
+			if (f && fscanf(f, "%ld", &charge_full) == 1 && charge_full > 0) {
+				fclose(f);
+				
+				// Read current voltage
+				f = fopen("/sys/class/power_supply/BAT0/voltage_now", "r");
+				if (f && fscanf(f, "%ld", &voltage) == 1 && voltage > 0) {
+					// Calculate percentage using energy = charge * voltage
+					// Using double to avoid overflow, then cast to int
+					double energy_now_d = (double)charge_now * voltage;
+					double energy_full_d = (double)charge_full * voltage;
+					cap = (int)((energy_now_d * 100.0) / energy_full_d);
+				} else {
+					// Fallback: try design voltage if voltage_now unavailable
+					fclose(f);
+					f = fopen("/sys/class/power_supply/BAT0/voltage_min_design", "r");
+					if (f && fscanf(f, "%ld", &voltage) == 1 && voltage > 0) {
+						double energy_now_d = (double)charge_now * voltage;
+						double energy_full_d = (double)charge_full * voltage;
+						cap = (int)((energy_now_d * 100.0) / energy_full_d);
+					}
+				}
+				if (f) fclose(f);
+			} else {
+				if (f) fclose(f);
+			}
+		} else {
+			if (f) fclose(f);
+		}
+	}
+	
+	// Ultimate fallback: if everything failed, try capacity file (might be wrong but better than nothing)
+	if (cap < 0) {
+		f = fopen("/sys/class/power_supply/BAT0/capacity", "r");
+		if (f) {
+			if (fscanf(f, "%d", &cap) != 1) cap = 0;
+			fclose(f);
+		} else {
+			cap = 0;
+		}
+	}
+	
+	// Clamp to valid range
+	if (cap < 0) cap = 0;
+	if (cap > 100) cap = 100;
 
 	/* get battery icon/animation */
 	char *battery_icon;
@@ -100,7 +160,7 @@ static void updatestatus_c(void)
 		battery_icon = get_current_animation_char();
 	} else {
 		/* not charging - show static icon based on charge level */
-		int level = (cap > 0) ? cap : 0;
+		int level = cap;
 		if (level >= 80) battery_icon = get_battery_icon(4);      /*  */
 		else if (level >= 60) battery_icon = get_battery_icon(3); /*  */
 		else if (level >= 40) battery_icon = get_battery_icon(2); /*  */
@@ -108,7 +168,7 @@ static void updatestatus_c(void)
 		else battery_icon = get_battery_icon(0);                  /*  */
 	}
 
-	snprintf(bat_str, sizeof(bat_str), "%c %s %d%%", bat_stat, battery_icon, cap > 0 ? cap : 0);
+	snprintf(bat_str, sizeof(bat_str), "%c %s %d%%", bat_stat, battery_icon, cap);
 
 	/* time */
 	time_t t = time(NULL);
