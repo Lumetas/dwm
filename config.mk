@@ -1,5 +1,5 @@
 # dharma version
-VERSION = 6.2
+VERSION = 1.0
 
 # Customize below to fit your system
 
